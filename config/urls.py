@@ -6,7 +6,7 @@ urlpatterns = [
     path('api/v1/', include(
         [
             path('task_manager/', include('task_manager.urls')),
-            # path('accounts/', include('accounts.urls')),
+            path('accounts/', include('accounts.urls')),
         ]
     )),
 ]

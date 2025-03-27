@@ -20,7 +20,8 @@ class ProjectSerializers(serializers.Serializer):
         return Project.objects.create(**validated_data)
 
     def update(self, instance, validated_data):
-        return 1
+        Project.objects.filter(id=instance.id).update(**validated_data)
+        return instance
 
     def save(self, **kwargs):
         validated_data = {**self.validated_data, **kwargs}
@@ -29,3 +30,19 @@ class ProjectSerializers(serializers.Serializer):
         else:
             self.instance = self.create(validated_data)
         return self.instance
+
+
+class ProjectModelSerializers(serializers.ModelSerializer):
+    class Meta:
+        model = Project
+        fields = "__all__"
+        read_only_fields = ["updated_at"]
+        extra_kwargs = {
+            "name": {"validators": []},
+            "description": {"validators": []},
+        }
+
+    def validate_name(self, value):
+        if len(value) < 3:
+            raise ValidationError("uchta harfdan katta")
+        return value
