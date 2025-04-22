@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'task_manager',
     'accounts',
     'common',
+    'image_processor',
 ]
 
 MIDDLEWARE = [
@@ -186,8 +187,18 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
+# Media files configuration
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 AUTH_USER_MODEL = 'accounts.User'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+CELERY_BROKER_URL = 'redis://localhost:6379/0'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+CELERY_TASK_TRACK_STARTED = True
+CELERY_TASK_TIME_LIMIT = 1800
+CELERY_TIMEZONE = 'Asia/Tashkent'
