@@ -94,5 +94,5 @@ def compress_image(image_id, quality=60):
 
 
 @shared_task
-def add(x, y):
-    return x + y
+def add():
+    print('salom')
