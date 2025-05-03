@@ -30,7 +30,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    "daphne",
+    'daphne',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -47,13 +47,13 @@ INSTALLED_APPS = [
     'django_filters',
     'drf_yasg',
     "django_celery_beat",
-    'channels',
 
     # local apps
     'task_manager',
     'accounts',
     'common',
-    'image_processor',
+    'notifications',
+    "chat",
 ]
 
 MIDDLEWARE = [
@@ -84,8 +84,8 @@ TEMPLATES = [
     },
 ]
 
-# WSGI_APPLICATION = 'config.wsgi.application'
 ASGI_APPLICATION = 'config.asgi.application'
+
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
@@ -190,10 +190,6 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
-# Media files configuration
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
-
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
@@ -209,10 +205,10 @@ CELERY_TIMEZONE = 'Asia/Tashkent'
 CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers.DatabaseScheduler'
 
 CHANNEL_LAYERS = {
-    'default': {
-        'BACKEND': 'channels_redis.core.RedisChannelLayer',
-        'CONFIG': {
-            "hosts": [('127.0.0.1', 6379)],
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("127.0.0.1", 6379)],
         },
     },
 }

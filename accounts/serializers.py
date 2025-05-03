@@ -81,3 +81,7 @@ class LoginWithTokenSerializer(serializers.Serializer):
 
         token = create_token(user.id)
         return {"access": token.get('access'), 'refresh': token.get('refresh')}
+
+
+class TestSerializers(serializers.Serializer):
+    id = serializers.CharField(max_length=200)

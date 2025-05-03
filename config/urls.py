@@ -3,8 +3,6 @@ from django.urls import path, include
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 from rest_framework import permissions
-from django.conf import settings
-from django.conf.urls.static import static
 
 schema_view = get_schema_view(
     openapi.Info(
@@ -25,10 +23,7 @@ urlpatterns = [
 
             path('task_manager/', include('task_manager.urls')),
             path('accounts/', include('accounts.urls')),
-            path('image_processor/', include('image_processor.urls')),
+            path('notifications/', include('notifications.urls')),
         ]
     )),
 ]
-
-if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
