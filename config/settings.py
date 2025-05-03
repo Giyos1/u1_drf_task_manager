@@ -25,6 +25,9 @@ SECRET_KEY = config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+INTERNAL_IPS = [
+    "127.0.0.1",
+]
 ALLOWED_HOSTS = []
 
 # Application definition
@@ -47,6 +50,7 @@ INSTALLED_APPS = [
     'django_filters',
     'drf_yasg',
     "django_celery_beat",
+    "debug_toolbar",
 
     # local apps
     'task_manager',
@@ -64,6 +68,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
 ]
 
 ROOT_URLCONF = 'config.urls'

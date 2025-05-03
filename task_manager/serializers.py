@@ -68,6 +68,9 @@ class TaskSerializers(serializers.ModelSerializer):
 
 
 class ProjectListSerializers(serializers.ModelSerializer):
+    owner = UserSerializer(read_only=True)
+    members = UserSerializer(many=True, read_only=True)
+    
     class Meta:
         model = Project
         fields = ["id", "name", 'description', 'created_at', 'owner', 'members']

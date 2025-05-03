@@ -194,11 +194,16 @@ class ProjectViewSet(ModelViewSet):
     pagination_class = None
 
     def get_queryset(self):
+        # Bu metodni har doim chaqirilganda optimallangan queryset qaytaradi
+        queryset = self.queryset.select_related('owner').prefetch_related(
+            'members'
+        )
+        
         if self.action in ['list', 'retrieve']:
-            return self.queryset.filter(owner=self.request.user)
+            return queryset.filter(owner=self.request.user)
         elif self.action == 'my_project_member':
-            return self.queryset.exclude(owner=self.request.user).filter(members__exact=self.request.user)
-        return self.queryset
+            return queryset.exclude(owner=self.request.user).filter(members=self.request.user).distinct()
+        return queryset
 
     def get_serializer_class(self):
         if self.action == 'create':
@@ -207,32 +212,28 @@ class ProjectViewSet(ModelViewSet):
             return ProjectUpdateSerializers
         return self.serializer_class
 
-    # def get_permissions(self):
-    #     if self.action == 'project_add_member':
-    #         return [IsAuthenticated(), IsOwner()]
-    #     return super(ProjectViewSet, self).get_permissions()
-
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
 
     @action(methods=['get'], detail=False)
     def my_project_member(self, request):
-        project = self.get_queryset()
-        serializers = ProjectListSerializers(project, many=True)
-        return Response(serializers.data)
+        projects = self.get_queryset()
+        serializer = self.get_serializer(projects, many=True)
+        return Response(serializer.data)
 
     @action(methods=['put'], detail=True, serializer_class=ProjectAddMemberSerializer,
             permission_classes=[IsAuthenticated, IsOwner])
     def project_add_member(self, request, pk=None):
         project = self.get_object()
-        serializers = ProjectAddMemberSerializer(data=request.data, instance=project, partial=True)
-        serializers.is_valid(raise_exception=True)
-        serializers.save()
-        return Response(serializers.data)
+        serializer = ProjectAddMemberSerializer(data=request.data, instance=project, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
 
     @action(methods=['get'], detail=True, permission_classes=[IsAuthenticated, IsMember | IsOwner])
     def project_members(self, request, pk=None):
+        # So'rovlar sonini kamaytirish uchun optimallashgan variant - 
+        # project allaqachon prefetch qilingan, qo'shimcha so'rov kerak emas
         project = self.get_object()
-        users = project.members.all()
-        serializers = UserSerializer(users, many=True)
-        return Response(serializers.data)
+        serializer = UserSerializer(project.members.all(), many=True)
+        return Response(serializer.data)
