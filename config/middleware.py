@@ -1,8 +1,5 @@
 import random
 from urllib.parse import parse_qs
-from rest_framework.authtoken.models import Token
-from django.contrib.auth.models import AnonymousUser
-
 from accounts.service import verify_token, SECRET_KEY
 
 
