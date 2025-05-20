@@ -201,8 +201,8 @@ STATIC_URL = 'static/'
 AUTH_USER_MODEL = 'accounts.User'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-CELERY_BROKER_URL = 'redis://localhost:6379/0'
-CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+CELERY_BROKER_URL = config('CELERY_BROKER_URL')
+CELERY_RESULT_BACKEND = config('CELERY_RESULT_BACKEND')
 CELERY_TASK_TRACK_STARTED = True
 CELERY_TASK_TIME_LIMIT = 1800
 CELERY_TIMEZONE = 'Asia/Tashkent'
@@ -213,7 +213,7 @@ CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
-            "hosts": [("127.0.0.1", 6379)],
+            "hosts": [(config('REDIS_HOST'), 6379)],
         },
     },
 }

@@ -1,0 +1,19 @@
+version: '3'
+
+services:
+  web:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - SECRET_KEY=test
+      - DB_NAME=test1
+      - DB_USER=postgres
+      - DB_PASSWORD=Giyos123!
+      - DB_HOST=host.docker.internal
+      - DB_PORT=5432
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - .:/app
+    command: python manage.py runserver 0.0.0.0:8000
