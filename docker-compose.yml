@@ -1,19 +1,73 @@
-version: '3'
+version: '3.9'
 
 services:
   web:
     build: .
-    ports:
-      - "8000:8000"
-    environment:
-      - SECRET_KEY=test
-      - DB_NAME=test1
-      - DB_USER=postgres
-      - DB_PASSWORD=Giyos123!
-      - DB_HOST=host.docker.internal
-      - DB_PORT=5432
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
+    command: daphne -b 0.0.0.0 -p 8000 config.asgi:application
     volumes:
       - .:/app
-    command: python manage.py runserver 0.0.0.0:8000
+      - static_volume:/app/static
+      - media_volume:/app/media
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    depends_on:
+      - db
+      - redis
+    networks:
+      - backend
+
+  db:
+    image: postgres:15
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "15432:5432"
+    networks:
+      - backend
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "16379:6379"
+    networks:
+      - backend
+
+  celery:
+    build: .
+    command: celery -A config worker --loglevel=info
+    volumes:
+      - .:/app
+    depends_on:
+      - db
+      - redis
+    env_file:
+      - .env
+    networks:
+      - backend
+
+  celery-beat:
+    build: .
+    command: celery -A config beat --loglevel=info
+    volumes:
+      - .:/app
+    depends_on:
+      - db
+      - redis
+    env_file:
+      - .env
+    networks:
+      - backend
+
+volumes:
+  postgres_data:
+  static_volume:
+  media_volume:
+
+networks:
+  backend:
