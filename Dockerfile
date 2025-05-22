@@ -1,6 +1,3 @@
-FROM ubuntu:latest
-LABEL authors="giyos"
-
 # Django uchun Dockerfile
 FROM python:3.12-slim
 
@@ -23,4 +20,5 @@ RUN pip install --upgrade pip && pip install -r requirment.txt
 EXPOSE 8000
 
 # Container ishga tushganda Django serverni ishga tushiramiz
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+#CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+ENTRYPOINT ["./entrypoint.sh"]
